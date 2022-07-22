@@ -1,0 +1,57 @@
+﻿@page "/fetchdata"
+@using EcommerceExample.CrossCutting.Contracts.Features.Products.Responses
+@inject HttpClient Http
+
+@code {
+    private ProductListResponse[]? productList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        productList = await Http.GetFromJsonAsync<ProductListResponse[]>("api/Products");
+    }
+
+    public class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string? Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+
+}
+
+<PageTitle>Product</PageTitle>
+
+@if (productList == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>ImageUrl</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var product in productList)
+        {
+            <tr>
+                <td>@product.Title</td>
+                <td>@product.Description</td>
+                <td><img src="@product.ImageUrl" alt=""></td>
+                <td>@product.Price</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
